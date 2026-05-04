@@ -46,6 +46,7 @@ class CodeSyntax extends InlineSyntax {
 
   @override
   bool onMatch(InlineParser parser, Match match) {
+    final marker = match[1]!; 
     final markerLength = match[1]!.length;
     final contentLength = match.match.length - markerLength * 2;
     final contentStart = parser.pos + markerLength;
@@ -55,13 +56,17 @@ class CodeSyntax extends InlineSyntax {
     if (_shouldStrip(code)) {
       code = code.substring(1, code.length - 1);
     }
-    code = code.replaceAll('\n', ' ');
+    code = code.replaceAll('\n', ' '); // RET not allowed, is this a good idea for Mycel ?
 
     if (parser.encodeHtml) {
       code = escapeHtml(code, escapeApos: false);
     }
 
-    parser.addNode(Element.text('code', code));
+    parser.addNode(Element('code', [
+          Text(marker),       
+          Text(code),
+          Text(marker),       
+    ]));
     return true;
   }
 
