@@ -42,6 +42,6 @@ class HeaderSyntax extends BlockSyntax {
     }
 
     parser.advance();
-    return Element('h$level', [if (content != null) UnparsedContent(content)]);
+    return Element('h$level', [if (content != null) UnparsedContent(matchedText)]);
   }
 }
