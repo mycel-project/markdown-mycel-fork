@@ -1,4 +1,4 @@
-name: markdown
+name: markdown_mycel_fork
 version: 7.4.0
 description: >-
   A portable Markdown library written in Dart that can parse Markdown into HTML.
