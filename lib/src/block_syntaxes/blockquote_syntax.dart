@@ -17,6 +17,8 @@ class BlockquoteSyntax extends BlockSyntax {
   @override
   RegExp get pattern => blockquotePattern;
 
+  static var _lastMarker = '> ';
+
   const BlockquoteSyntax();
 
   /// Whether this blockquote ends with a lazy continuation line.
@@ -51,6 +53,7 @@ class BlockquoteSyntax extends BlockSyntax {
           markerEnd = markerStart + 1;
         }
         childLines.add(Line(currentLine.content.substring(markerEnd)));
+        _lastMarker = currentLine.content.substring(markerStart, markerEnd);
         parser.advance();
         _lazyContinuation = false;
         continue;
@@ -95,6 +98,10 @@ class BlockquoteSyntax extends BlockSyntax {
       parentSyntax: this,
     );
 
-    return Element('blockquote', children);
+    return Element('blockquote',
+      [
+        Text(_lastMarker),
+        ...children,
+    ]);
   }
 }
