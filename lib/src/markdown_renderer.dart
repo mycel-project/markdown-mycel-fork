@@ -3,18 +3,18 @@ import '../markdown.dart';
 
 (List<flutter.InlineSpan>, List<Node>) markdownToFormattedMarkdown(
   String markdown, {
-  Iterable<BlockSyntax> blockSyntaxes = const [],
-  Iterable<InlineSyntax> inlineSyntaxes = const [],
-  ExtensionSet? extensionSet,
-  Resolver? linkResolver,
-  LinkBuilder? linkBuilder,
-  Resolver? imageLinkResolver,
-  LinkBuilder? imageLinkBuilder,
-  bool inlineOnly = false,
-  bool encodeHtml = false,
-  bool enableTagfilter = false,
-  bool withDefaultBlockSyntaxes = true,
-  bool withDefaultInlineSyntaxes = true,
+    Iterable<BlockSyntax> blockSyntaxes = const [],
+    Iterable<InlineSyntax> inlineSyntaxes = const [],
+    ExtensionSet? extensionSet,
+    Resolver? linkResolver,
+    LinkBuilder? linkBuilder,
+    Resolver? imageLinkResolver,
+    LinkBuilder? imageLinkBuilder,
+    bool inlineOnly = false,
+    bool encodeHtml = false,
+    bool enableTagfilter = false,
+    bool withDefaultBlockSyntaxes = true,
+    bool withDefaultInlineSyntaxes = true,
 }) {
   final document = Document(
     blockSyntaxes: blockSyntaxes,
@@ -45,8 +45,8 @@ class MarkdownRenderer implements NodeVisitor {
   MarkdownRenderer();
 
   flutter.TextStyle get _currentStyle => _styleStack.isEmpty
-      ? const flutter.TextStyle()
-      : _styleStack.reduce((a, b) => a.merge(b));
+  ? const flutter.TextStyle()
+  : _styleStack.reduce((a, b) => a.merge(b));
 
   List<flutter.InlineSpan> render(List<Node> nodes) {
     for (final node in nodes) {
@@ -58,11 +58,7 @@ class MarkdownRenderer implements NodeVisitor {
   @override
   void visitText(Text text) {
     final raw = text.textContent;
-    final rendered = raw.replaceAll(
-      ' ',
-      '\u00A0',
-    ); // Transform spaces into non-breaking spaces to avoid cursor inconsistencies at the end of lines followed by \n, which occur with certain styles (e.g. bold, italic, fontSize, ...)
-    spans.add(flutter.TextSpan(text: rendered, style: _currentStyle));
+    spans.add(flutter.TextSpan(text: raw, style: _currentStyle));
   }
 
   @override
@@ -77,54 +73,63 @@ class MarkdownRenderer implements NodeVisitor {
     if (element.tag == 'p' || element.tag.startsWith('h')) {
       // No need to add \n for blockquote since it is already composed of tags it applies to
       spans.add(const flutter.TextSpan(text: '\n'));
+      // Replace the last space before \n with a non-breaking space to avoid
+      // cursor inconsistencies with certain styles (bold, italic, fontSize, ...)
+      final last = spans[spans.length - 2];
+      if (last is flutter.TextSpan && last.text != null && last.text!.endsWith(' ')) {
+        spans[spans.length - 2] = flutter.TextSpan(
+          text: '${last.text!.substring(0, last.text!.length - 1)}\u00A0',
+          style: last.style,
+        );
+      }
     }
   }
 
   flutter.TextStyle _styleForTag(String tag) {
     switch (tag) {
       case 'h1':
-        return const flutter.TextStyle(
-          fontSize: 28,
-          fontWeight: flutter.FontWeight.bold,
-        );
+      return const flutter.TextStyle(
+        fontSize: 28,
+        fontWeight: flutter.FontWeight.bold,
+      );
       case 'h2':
-        return const flutter.TextStyle(
-          fontSize: 26,
-          fontWeight: flutter.FontWeight.bold,
-        );
+      return const flutter.TextStyle(
+        fontSize: 26,
+        fontWeight: flutter.FontWeight.bold,
+      );
       case 'h3':
-        return const flutter.TextStyle(
-          fontSize: 24,
-          fontWeight: flutter.FontWeight.bold,
-        );
+      return const flutter.TextStyle(
+        fontSize: 24,
+        fontWeight: flutter.FontWeight.bold,
+      );
       case 'h4':
-        return const flutter.TextStyle(
-          fontSize: 22,
-          fontWeight: flutter.FontWeight.bold,
-        );
+      return const flutter.TextStyle(
+        fontSize: 22,
+        fontWeight: flutter.FontWeight.bold,
+      );
       case 'h5':
-        return const flutter.TextStyle(
-          fontSize: 20,
-          fontWeight: flutter.FontWeight.bold,
-        );
+      return const flutter.TextStyle(
+        fontSize: 20,
+        fontWeight: flutter.FontWeight.bold,
+      );
       case 'h6':
-        return const flutter.TextStyle(
-          fontSize: 18,
-          fontWeight: flutter.FontWeight.bold,
-        );
-     case 'blockquote':
-        return const flutter.TextStyle(
-          color: flutter.Colors.grey,
-          fontStyle: flutter.FontStyle.italic
-        );
+      return const flutter.TextStyle(
+        fontSize: 18,
+        fontWeight: flutter.FontWeight.bold,
+      );
+      case 'blockquote':
+      return const flutter.TextStyle(
+        color: flutter.Colors.grey,
+        fontStyle: flutter.FontStyle.italic
+      );
       case 'strong':
       return const flutter.TextStyle(fontWeight: flutter.FontWeight.bold);
       case 'em':
       return const flutter.TextStyle(fontStyle: flutter.FontStyle.italic);
       case 'code':
-       return const flutter.TextStyle(fontStyle: flutter.FontStyle.italic, color: flutter.Colors.grey);
+      return const flutter.TextStyle(fontStyle: flutter.FontStyle.italic, color: flutter.Colors.grey);
       default:
-        return const flutter.TextStyle();
+      return const flutter.TextStyle();
     }
   }
 }
