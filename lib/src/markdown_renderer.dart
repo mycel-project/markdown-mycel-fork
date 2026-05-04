@@ -115,11 +115,12 @@ class MarkdownRenderer implements NodeVisitor {
      case 'blockquote':
         return const flutter.TextStyle(
           color: flutter.Colors.grey,
+          fontStyle: flutter.FontStyle.italic
         );
-      // case 'strong':
-      // return const flutter.TextStyle(fontWeight: flutter.FontWeight.bold);
-      // case 'em':
-      // return const flutter.TextStyle(fontStyle: flutter.FontStyle.italic);
+      case 'strong':
+      return const flutter.TextStyle(fontWeight: flutter.FontWeight.bold);
+      case 'em':
+      return const flutter.TextStyle(fontStyle: flutter.FontStyle.italic);
       // case 'code':
       // return const flutter.TextStyle(fontFamily: 'monospace');
       default:

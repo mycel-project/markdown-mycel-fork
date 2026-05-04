@@ -248,8 +248,11 @@ class InlineParser {
           opener,
           closer,
           tag: matchedTag.tag,
-          getChildren: () =>
-              _tree.sublist(openerTextNodeIndex + 1, closerTextNodeIndex),
+          getChildren: () => [
+            Text(openerTextNode.text.substring(openerTextNode.text.length - indicatorLength)),
+            ..._tree.sublist(openerTextNodeIndex + 1, closerTextNodeIndex),
+            Text(closerTextNode.text.substring(0, indicatorLength)), 
+          ],
         );
         // Replace all of the nodes between the opener and the closer (which
         // are now the new emphasis node's children) with the emphasis node.
