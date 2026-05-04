@@ -167,10 +167,15 @@ class LinkSyntax extends DelimiterSyntax {
   Node createNode(
     String destination,
     String? title, {
-    required List<Node> Function() getChildren,
+      required List<Node> Function() getChildren,
   }) {
     final children = getChildren();
-    final element = Element('a', children);
+    final element = Element('a', [
+        Text("["),
+        ...children,
+        Text("]"),
+        Element('a-href', [Text('($destination${title != null ? ' "$title"' : ''})')]),
+    ]);
     element.attributes['href'] = normalizeLinkDestination(
       escapePunctuation(destination),
     );

@@ -122,6 +122,10 @@ class MarkdownRenderer implements NodeVisitor {
         color: flutter.Colors.grey,
         fontStyle: flutter.FontStyle.italic
       );
+      case 'a':
+      return const flutter.TextStyle(color: flutter.Colors.orange);
+      case 'a-href':
+      return const flutter.TextStyle(fontSize: 6, color: flutter.Colors.grey);
       case 'strong':
       return const flutter.TextStyle(fontWeight: flutter.FontWeight.bold);
       case 'em':
