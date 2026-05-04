@@ -43,7 +43,7 @@ class ParagraphSyntax extends BlockSyntax {
       return null;
     }
 
-    final contents = UnparsedContent(childLines.join('\n').trimRight());
+    final contents = UnparsedContent(childLines.join('\n'));
     return Element('p', [contents]);
   }
 }
