@@ -38,25 +38,25 @@ class BlockquoteSyntax extends BlockSyntax {
         // A block quote marker consists of a `>` together with an optional
         // following space of indentation, see
         // https://spec.commonmark.org/0.30/#block-quote-marker.
-        final markerStart = match.match.indexOf('>');
-        int markerEnd;
-        if (currentLine.content.length > 1) {
-          var hasSpace = false;
-          // Check if there is a following space if the marker is not at the end
-          // of this line.
-          if (markerStart < currentLine.content.length - 1) {
-            final nextChar = currentLine.content.codeUnitAt(markerStart + 1);
-            hasSpace = nextChar == $tab || nextChar == $space;
-          }
-          markerEnd = markerStart + (hasSpace ? 2 : 1);
-        } else {
-          markerEnd = markerStart + 1;
+        const markerStart = 0; 
+        var markerEnd = markerStart;
+        while (markerEnd < currentLine.content.length && 
+          (currentLine.content[markerEnd] == ' ' || currentLine.content[markerEnd] == '\t')) {
+          markerEnd++;
+        }
+        while (markerEnd < currentLine.content.length && 
+          currentLine.content[markerEnd] == '>') {
+          markerEnd++;
+        }
+        if (markerEnd < currentLine.content.length && 
+          (currentLine.content[markerEnd] == ' ' || currentLine.content[markerEnd] == '\t')) {
+          markerEnd++;
         }
         childLines.add(Line(currentLine.content.substring(markerEnd)));
         _lastMarker = currentLine.content.substring(markerStart, markerEnd);
         parser.advance();
         _lazyContinuation = false;
-        continue;
+        break;
       }
 
       final lastLine = childLines.last;
